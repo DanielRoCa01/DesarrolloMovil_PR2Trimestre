@@ -1,6 +1,9 @@
 package com.company.room;
 
+
+
 import android.content.Context;
+import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -14,7 +17,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-@Database(entities = { Elemento.class }, version = 1, exportSchema = false)
+@Database(entities = { Manga.class }, version = 6, exportSchema = false)
 public abstract class ElementosBaseDeDatos extends RoomDatabase {
 
     private static volatile ElementosBaseDeDatos INSTANCIA;
@@ -41,22 +44,26 @@ public abstract class ElementosBaseDeDatos extends RoomDatabase {
 
     @Dao
     interface ElementosDao {
-        @Query("SELECT * FROM Elemento")
-        LiveData<List<Elemento>> obtener();
+        @Query("SELECT * FROM Manga")
+        LiveData<List<Manga>> obtener();
 
         @Insert
-        void insertar(Elemento elemento);
+        void insertar(Manga elemento) throws Exception;
 
         @Update
-        void actualizar(Elemento elemento);
+        void actualizar(Manga elemento);
 
         @Delete
-        void eliminar(Elemento elemento);
+        void eliminar(Manga elemento);
+        @Query("DELETE FROM Manga")
+        void deleteAll(); // Método para borrar todos los registros de la tabla
 
-        @Query("SELECT * FROM Elemento ORDER BY valoracion DESC")
-        LiveData<List<Elemento>> masValorados();
+        @Query("SELECT * FROM Manga ORDER BY score DESC")
+        LiveData<List<Manga>> masValorados();
 
-        @Query("SELECT * FROM Elemento WHERE nombre LIKE '%' || :t || '%'")
-        LiveData<List<Elemento>> buscar(String t);
+        @Query("SELECT * FROM Manga WHERE titulo LIKE '%' || :t || '%'")
+        LiveData<List<Manga>> buscar(String t);
+        @Query("SELECT COUNT(*) FROM Manga")
+        int contarUsuarios();
     }
 }

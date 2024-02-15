@@ -6,7 +6,7 @@ import java.util.List;
 
 public class RecyclerBusquedaFragment extends RecyclerElementosFragment {
     @Override
-    LiveData<List<Elemento>> obtenerElementos() {
+    LiveData<List<Manga>> obtenerElementos() {
         return elementosViewModel.buscar();
     }
 

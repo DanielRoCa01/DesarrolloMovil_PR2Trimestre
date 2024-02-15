@@ -1,5 +1,10 @@
 package com.company.room;
 
+import static com.company.room.MainActivity.json;
+
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +18,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.company.room.databinding.FragmentNuevoElementoBinding;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 
 public class NuevoElementoFragment extends Fragment {
@@ -33,13 +46,19 @@ public class NuevoElementoFragment extends Fragment {
         binding.crear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nombre = binding.nombre.getText().toString();
-                String descripcion = binding.descripcion.getText().toString();
 
-                elementosViewModel.insertar(new Elemento(nombre, descripcion));
+                try {
+                    for(Manga m: json){
+                        elementosViewModel.insertar(m);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
 
                 navController.popBackStack();
             }
         });
     }
+
 }

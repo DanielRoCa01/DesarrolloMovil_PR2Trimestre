@@ -14,7 +14,7 @@ public class ElementosRepositorio {
     Executor executor = Executors.newSingleThreadExecutor();
     ElementosBaseDeDatos.ElementosDao elementosDao;
     interface Callback {
-        void cuandoFinalice(List<Elemento> elementos);
+        void cuandoFinalice(List<Manga> elementos);
     }
     ElementosRepositorio(Application application){
         elementosDao = ElementosBaseDeDatos.obtenerInstancia(application).obtenerElementosDao();
@@ -25,20 +25,24 @@ public class ElementosRepositorio {
     ElementosRepositorio(){
            }
 
-    LiveData<List<Elemento>> obtener(){
+    LiveData<List<Manga>> obtener(){
         return elementosDao.obtener();
     }
 
-    void insertar(Elemento elemento){
+    void insertar(Manga elemento) throws Exception{
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                elementosDao.insertar(elemento);
+                try {
+                    elementosDao.insertar(elemento);
+                } catch (Exception e) {
+
+                }
             }
         });
     }
 
-    void eliminar(Elemento elemento) {
+    void eliminar(Manga elemento) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -47,20 +51,24 @@ public class ElementosRepositorio {
         });
     }
 
-    public void actualizar(Elemento elemento, float valoracion) {
+    public void actualizar(Manga elemento, Double valoracion) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                elemento.valoracion = valoracion;
+                elemento.score = valoracion;
                 elementosDao.actualizar(elemento);
             }
         });
     }
-    LiveData<List<Elemento>> masValorados() {
+    LiveData<List<Manga>> masValorados() {
         return elementosDao.masValorados();
     }
 
-    LiveData<List<Elemento>> buscar(String t) {
+    LiveData<List<Manga>> buscar(String t) {
         return elementosDao.buscar(t);
+    }
+    int contar(){return elementosDao.contarUsuarios();}
+    void deleteAll(){
+        elementosDao.deleteAll();
     }
 }

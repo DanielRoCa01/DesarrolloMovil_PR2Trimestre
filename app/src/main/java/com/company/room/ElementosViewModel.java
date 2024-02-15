@@ -10,13 +10,16 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ElementosViewModel extends AndroidViewModel {
 
     ElementosRepositorio elementosRepositorio;
 
+    private Executor executor;
 
-    MutableLiveData<Elemento> elementoSeleccionado = new MutableLiveData<>();
+    MutableLiveData<Manga> elementoSeleccionado = new MutableLiveData<>();
 
     public ElementosViewModel(@NonNull Application application) {
         super(application);
@@ -24,47 +27,61 @@ public class ElementosViewModel extends AndroidViewModel {
 
 
         elementosRepositorio = new ElementosRepositorio(application);
+        executor = Executors.newSingleThreadExecutor();
     }
 
+    public void borrarTodosLosUsuarios() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // Operaciones de base de datos
+                deleteAll();
+            }
+        });
+    }
     MutableLiveData<String> terminoBusqueda = new MutableLiveData<>();
 
-    LiveData<List<Elemento>> resultadoBusqueda = Transformations.switchMap(terminoBusqueda, new Function<String, LiveData<List<Elemento>>>() {
+    LiveData<List<Manga>> resultadoBusqueda = Transformations.switchMap(terminoBusqueda, new Function<String, LiveData<List<Manga>>>() {
         @Override
-        public LiveData<List<Elemento>> apply(String input) {
+        public LiveData<List<Manga>> apply(String input) {
             return elementosRepositorio.buscar(input);
         }
     });
-    LiveData<List<Elemento>> obtener(){
+    LiveData<List<Manga>> obtener(){
         return elementosRepositorio.obtener();
     }
 
-    void insertar(Elemento elemento){
+    void insertar(Manga elemento) throws Exception {
         elementosRepositorio.insertar(elemento);
     }
 
-    void eliminar(Elemento elemento){
+    void eliminar(Manga elemento){
         elementosRepositorio.eliminar(elemento);
     }
 
-    void actualizar(Elemento elemento, float valoracion){
+    void actualizar(Manga elemento, Double valoracion){
         elementosRepositorio.actualizar(elemento, valoracion);
     }
 
-    void seleccionar(Elemento elemento){
+    void seleccionar(Manga elemento){
         elementoSeleccionado.setValue(elemento);
     }
 
-    MutableLiveData<Elemento> seleccionado(){
+    MutableLiveData<Manga> seleccionado(){
         return elementoSeleccionado;
     }
-    LiveData<List<Elemento>> masValorados(){
+    LiveData<List<Manga>> masValorados(){
         return elementosRepositorio.masValorados();
     }
-    LiveData<List<Elemento>> buscar(){
+    LiveData<List<Manga>> buscar(){
         return resultadoBusqueda;
     }
 
     void establecerTerminoBusqueda(String t){
         terminoBusqueda.setValue(t);
+    }
+    int contar(){return elementosRepositorio.contar();}
+    void deleteAll(){
+        elementosRepositorio.deleteAll();
     }
 }

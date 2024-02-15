@@ -5,24 +5,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
+    android:textAlignment="center"
     tools:context=".NuevoElementoFragment">
 
-    <EditText
+    <TextView
         android:id="@+id/nombre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
-        android:textSize="32sp"/>
-    <EditText
+        android:hint="Desea insertar los registros predeterminados"
+        android:textAlignment="center"
+        android:textSize="32sp" />
+
+    <TextView
         android:id="@+id/descripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Descripcion"
-        android:textSize="32sp"/>
+        android:hint="En caso de existir algun duplicado la insercion no se realizará."
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
     <Button
         android:id="@+id/crear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="CREAR"
-        android:textSize="32sp"/>
+        android:text="INSERTAR"
+        android:textSize="32sp" />
 </LinearLayout>

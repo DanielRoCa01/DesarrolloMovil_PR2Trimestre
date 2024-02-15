@@ -1,5 +1,7 @@
 package com.company.room;
 
+import static com.company.room.MainActivity.json;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +48,7 @@ public class RecyclerElementosFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.action_nuevoElementoFragment);
+
             }
         });
 
@@ -67,23 +70,19 @@ public class RecyclerElementosFragment extends Fragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int posicion = viewHolder.getAdapterPosition();
-                Elemento elemento = elementosAdapter.obtenerElemento(posicion);
+                Manga elemento = elementosAdapter.obtenerElemento(posicion);
                 elementosViewModel.eliminar(elemento);
 
             }
         }).attachToRecyclerView(binding.recyclerView);
 
-        elementosViewModel.obtener().observe(getViewLifecycleOwner(), new Observer<List<Elemento>>() {
-            @Override
-            public void onChanged(List<Elemento> elementos) {
-                elementosAdapter.establecerLista(elementos);
-            }
-        });
+        obtenerElementos().observe(getViewLifecycleOwner(), elementos -> elementosAdapter.establecerLista(elementos));
+
     }
 
     class ElementosAdapter extends RecyclerView.Adapter<ElementoViewHolder> {
 
-        List<Elemento> elementos;
+        List<Manga> elementos ;
 
         @NonNull
         @Override
@@ -94,25 +93,19 @@ public class RecyclerElementosFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull ElementoViewHolder holder, int position) {
 
-            Elemento elemento = elementos.get(position);
+            Manga elemento = elementos.get(position);
 
-            holder.binding.nombre.setText(elemento.nombre);
-            holder.binding.valoracion.setRating(elemento.valoracion);
+            holder.binding.nombre.setText(elemento.getTitulo());
+            holder.binding.score.setText(elemento.getScore().toString());
 
-            holder.binding.valoracion.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                    if(fromUser) {
-                        elementosViewModel.actualizar(elemento, rating);
-                    }
-                }
-            });
+
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     elementosViewModel.seleccionar(elemento);
                     navController.navigate(R.id.action_mostrarElementoFragment);
+
                 }
             });
         }
@@ -122,12 +115,12 @@ public class RecyclerElementosFragment extends Fragment {
             return elementos != null ? elementos.size() : 0;
         }
 
-        public void establecerLista(List<Elemento> elementos){
+        public void establecerLista(List<Manga> elementos){
             this.elementos = elementos;
             notifyDataSetChanged();
         }
 
-        public Elemento obtenerElemento(int posicion){
+        public Manga obtenerElemento(int posicion){
             return elementos.get(posicion);
         }
     }
@@ -140,7 +133,9 @@ public class RecyclerElementosFragment extends Fragment {
             this.binding = binding;
         }
     }
-    LiveData<List<Elemento>> obtenerElementos(){
+    LiveData<List<Manga>> obtenerElementos(){
+
+
         return elementosViewModel.obtener();
     }
 }

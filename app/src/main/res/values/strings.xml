@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">room</string>
+    <string name="app_name">MyMangaList</string>
+    <string name="estado">Estado</string>
+    <string name="volumenes">Volumenes</string>
+    <string name="popularidad">Popularidad</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
